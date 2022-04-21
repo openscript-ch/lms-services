@@ -26,6 +26,9 @@ jobs:
              find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/${{ secrets.ACME_EMAIL }}/g'' {} \;
      
       - name: Setup tmate session
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         uses: mxschmitt/action-tmate@v3
 
       - name: Trigger deployment
@@ -40,5 +43,5 @@ jobs:
              chmod 700 ~/.ssh
              ssh-keyscan $SITE_URL >> ~/.ssh/known_hosts
              chmod 644 ~/.ssh/known_hosts
-             scp -o StrictHostKeyChecking=no -r * deploy@$SITE_URL:/srv/$SITE_URL/
+             scp -r * deploy@$SITE_URL:/srv/$SITE_URL/
              ssh deploy@$SITE_URL "sudo scripts/update-docker.sh"
