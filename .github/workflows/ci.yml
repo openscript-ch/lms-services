@@ -24,6 +24,9 @@ jobs:
              find *.yml -type f -exec sed -i ''s/#{SMTP_PASSWORD}#/${{ secrets.SMTP_PASSWORD }}/g'' {} \;
              find *.yml -type f -exec sed -i ''s/#{MOODLE_MAIL_NOREPLY_ADDRESS}#/${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}/g'' {} \;
              find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/${{ secrets.ACME_EMAIL }}/g'' {} \;
+     
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
 
       - name: Trigger deployment
         run: |
