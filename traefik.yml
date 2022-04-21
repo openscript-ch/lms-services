@@ -14,7 +14,7 @@ entryPoints:
 certificatesResolvers:
   defaultResolver:
     acme:
-      email: "hi@openscript.ch"
+      email: "#{ACME_EMAIL}#"
       storage: "/letsencrypt/acme.json"
       httpChallenge:
         entryPoint: "http"
