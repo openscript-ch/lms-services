@@ -196,6 +196,8 @@ The following sources were used:
       export PATH
       ```
 
+   1. Change SSH SFTP to `internal-sftp` in `/etc/ssh/sshd_config` by setting `Subsystem	sftp	internal-sftp` and reload with `systemctl reload sshd.service`
+
 ### Configure continuous integration
 
 Set the following secrets:

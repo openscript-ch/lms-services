@@ -97,6 +97,8 @@ services:
       - "traefik.http.routers.moodle-https.tls.certresolver=defaultResolver"
       - "traefik.http.routers.moodle-https-service=moodle-http-service"
       - "traefik.http.services.moodle-http-service.loadbalancer.server.port=8080"
+    networks:
+      - proxy
     volumes:
       - moodledata:/var/www/moodledata
       - moodlehtml:/var/www/html
