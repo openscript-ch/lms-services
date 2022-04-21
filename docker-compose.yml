@@ -19,7 +19,7 @@ volumes:
 services:
   traefik:
     restart: unless-stopped
-    image: traefik
+    image: traefik:2.4
     labels:
       - "traefik.enable=true"
 
