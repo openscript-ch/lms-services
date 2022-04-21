@@ -12,21 +12,31 @@ jobs:
 
       - name: Replace variables
         env:
+          PROXY_URL: ${{ secrets.PROXY_URL }}
+          SITE_URL: ${{ secrets.SITE_URL }}
+          MOODLE_EMAIL: ${{ secrets.MOODLE_EMAIL }}
+          MOODLE_SITENAME: ${{ secrets.MOODLE_SITENAME }}
+          MOODLE_USERNAME: ${{ secrets.MOODLE_USERNAME }}
           MOODLE_PASSWORD: ${{ secrets.MOODLE_PASSWORD }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
           SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          MOODLE_MAIL_NOREPLY_ADDRESS: ${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}
+          ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
         run: |
-             find *.yml -type f -exec sed -i ''s/#{PROXY_URL}#/${{ secrets.PROXY_URL }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SITE_URL}#/${{ secrets.SITE_URL }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_EMAIL}#/${{ secrets.MOODLE_EMAIL }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_SITENAME}#/${{ secrets.MOODLE_SITENAME }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_USERNAME}#/${{ secrets.MOODLE_USERNAME }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{PROXY_URL}#/$PROXY_URL/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SITE_URL}#/$SITE_URL/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_EMAIL}#/$MOODLE_EMAIL/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_SITENAME}#/$MOODLE_SITENAME/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_USERNAME}#/$MOODLE_USERNAME/g'' {} \;
              find *.yml -type f -exec sed -i ''s/#{MOODLE_PASSWORD}#/$MOODLE_PASSWORD/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_HOST}#/${{ secrets.SMTP_HOST }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_PORT}#/${{ secrets.SMTP_PORT }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_USER}#/${{ secrets.SMTP_USER }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_HOST}#/$SMTP_HOST/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_PORT}#/$SMTP_PORT/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_USER}#/$SMTP_USER/g'' {} \;
              find *.yml -type f -exec sed -i ''s/#{SMTP_PASSWORD}#/$SMTP_PASSWORD/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_MAIL_NOREPLY_ADDRESS}#/${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/${{ secrets.ACME_EMAIL }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_MAIL_NOREPLY_ADDRESS}#/$MOODLE_MAIL_NOREPLY_ADDRESS/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/$ACME_EMAIL/g'' {} \;
 
       - name: Trigger deployment
         env:

@@ -74,7 +74,7 @@ services:
       - DB_PASS=moodle
       - DB_PREFIX=mdl_
       - SSLPROXY=false
-      - MOODLE_EMAIL=https://#{MOODLE_EMAIL}#
+      - MOODLE_EMAIL=#{MOODLE_EMAIL}#
       - MOODLE_LANGUAGE=en
       - MOODLE_SITENAME=#{MOODLE_SITENAME}#
       - MOODLE_USERNAME=#{MOODLE_USERNAME}#
