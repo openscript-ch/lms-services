@@ -208,4 +208,4 @@ Set the following secrets:
 | `SMTP_PASSWORD` | SMTP email server password. | herolocal |
 | `MOODLE_MAIL_NOREPLY_ADDRESS` | Sender email for emails sent by LMS. | noreply@example.com |
 | `ACME_EMAIL` | Contact email address for ACME challenge. | admin@example.com |
-| `SSH_PRIVATE_KEY` | Base64 version of the ssh private key which is used to deploy LMS. Create with `cat secret-key | base64`. | ... |
+| `SSH_PRIVATE_KEY` | Base64 version of the ssh private key which is used to deploy LMS. Create with `cat secret-key | openssl base64 | tr -d '\n'`. | ... |
