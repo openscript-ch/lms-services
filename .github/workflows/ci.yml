@@ -1,0 +1,37 @@
+name: Continuous integration
+
+on: push
+
+jobs:
+  build:
+    name: Build and push configuration
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Replace variables
+        run: |
+             find *.yml -type f -exec sed -i ''s/#{PROXY_URL}#/${{ secrets.PROXY_URL }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SITE_URL}#/${{ secrets.SITE_URL }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_EMAIL}#/${{ secrets.MOODLE_EMAIL }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_SITENAME}#/${{ secrets.MOODLE_SITENAME }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_USERNAME}#/${{ secrets.MOODLE_USERNAME }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_PASSWORD}#/${{ secrets.MOODLE_PASSWORD }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_HOST}#/${{ secrets.SMTP_HOST }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_PORT}#/${{ secrets.SMTP_PORT }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_USER}#/${{ secrets.SMTP_USER }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{SMTP_PASSWORD}#/${{ secrets.SMTP_PASSWORD }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{MOODLE_MAIL_NOREPLY_ADDRESS}#/${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}/g'' {} \;
+             find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/${{ secrets.ACME_EMAIL }}/g'' {} \;
+
+      - name: Trigger deployment
+        run: |
+             which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )
+             eval $(ssh-agent -s)
+             echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d | ssh-add -
+             mkdir -p ~/.ssh
+             chmod 700 ~/.ssh
+             ssh-keyscan ${{ secrets.SITE_URL }} >> ~/.ssh/known_hosts
+             chmod 644 ~/.ssh/known_hosts
+             ssh deploy@${{ secrets.SITE_URL }} "sudo scripts/update-docker.sh"
