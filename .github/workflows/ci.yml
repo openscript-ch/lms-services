@@ -29,13 +29,16 @@ jobs:
         uses: mxschmitt/action-tmate@v3
 
       - name: Trigger deployment
+        env:
+          SITE_URL: ${{ secrets.SITE_URL }}
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         run: |
              which ssh-agent || ( apt-get update -y && apt-get install openssh-client git -y )
              eval $(ssh-agent -s)
-             echo "${{ secrets.SSH_PRIVATE_KEY }}" | base64 -d | ssh-add -
+             echo "$SSH_PRIVATE_KEY" | base64 -d | ssh-add -
              mkdir -p ~/.ssh
              chmod 700 ~/.ssh
-             ssh-keyscan ${{ secrets.SITE_URL }} >> ~/.ssh/known_hosts
+             ssh-keyscan $SITE_URL >> ~/.ssh/known_hosts
              chmod 644 ~/.ssh/known_hosts
-             scp -o StrictHostKeyChecking=no -r * deploy@${{ secrets.SITE_URL }}:/srv/${{ secrets.SITE_URL }}/
-             ssh deploy@${{ secrets.SITE_URL }} "sudo scripts/update-docker.sh"
+             scp -o StrictHostKeyChecking=no -r * deploy@$SITE_URL:/srv/$SITE_URL/
+             ssh deploy@$SITE_URL "sudo scripts/update-docker.sh"
