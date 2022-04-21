@@ -166,7 +166,6 @@ The following sources were used:
       #/bin/bash
 
       cd /srv/lms-services
-      git pull
       docker-compose -f docker-compose.yml pull
       docker-compose -f docker-compose.yml up -d --remove-orphans
       docker image prune -a -f
