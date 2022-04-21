@@ -166,9 +166,15 @@ The following sources were used:
       #/bin/bash
 
       cd /srv/lms-services
-      docker-compose -f docker-compose.yml pull
-      docker-compose -f docker-compose.yml up -d --remove-orphans
+      docker compose -f docker-compose.yml pull
+      docker compose -f docker-compose.yml up -d --remove-orphans
       docker image prune -a -f
+      ```
+
+   1. Turn `update-docker.sh` into an executable
+
+      ```bash
+      chmod +x /home/deploy/scripts/update-docker.sh
       ```
 
    1. Create a symbolic link to `sudo`
