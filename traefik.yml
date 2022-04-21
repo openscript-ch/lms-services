@@ -11,6 +11,11 @@ entryPoints:
   https:
     address: ":443"
 
+providers:
+  docker:
+    endpoint: "unix:///var/run/docker.sock"
+    exposedByDefault: false
+
 certificatesResolvers:
   defaultResolver:
     acme:
