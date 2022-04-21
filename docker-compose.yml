@@ -1,5 +1,11 @@
 version: "3"
 
+networks:
+  proxy:
+    name: proxy
+  lms:
+    name: lms
+
 volumes:
   postgres:
     driver: local
@@ -16,11 +22,9 @@ services:
     image: traefik
     labels:
       - "traefik.enable=true"
-
       - "traefik.http.middlewares.auth.basicauth.users=harold.finch:$$2y$$05$$eSfwvKJnawY0Ac2Rdsm2A.iQwvEEL0VcOp.y0aOh0BqTmGacAgmm2"
       - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.permanent=true"
-
       - "traefik.http.routers.dashboard-https.rule=Host(`#{PROXY_URL}#`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
       - "traefik.http.routers.dashboard-https.entrypoints=https"
       - "traefik.http.routers.dashboard-https.tls.certresolver=defaultResolver"
@@ -28,9 +32,10 @@ services:
       - "traefik.http.routers.dashboard-https.middlewares=auth"
       - "traefik.http.routers.dashboard-http.rule=Host(`#{PROXY_URL}#`)"
       - "traefik.http.routers.dashboard-http.entrypoints=http"
-      - "traefik.http.routers.dashboard-http.middlewares=https_redirect"
-
+      - "traefik.http.routers.dashboard-http.middlewares=dashboard-https-redirect"
       - "traefik.http.services.dashboard.loadbalancer.server.port=80"
+    networks:
+      - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/traefik.yml
@@ -50,6 +55,8 @@ services:
       - POSTGRES_PASSWORD=moodle
       - POSTGRES_USER=moodle
       - POSTGRES_DB=moodle
+    networks:
+      - lms
     volumes:
       - postgres:/var/lib/postgresql/data
 
@@ -91,6 +98,9 @@ services:
       - "traefik.http.routers.moodle-https.tls.certresolver=defaultResolver"
       - "traefik.http.routers.moodle-https-service=moodle-http-service"
       - "traefik.http.services.moodle-http-service.loadbalancer.server.port=8080"
+    networks:
+      - lms
+      - proxy
     volumes:
       - moodledata:/var/www/moodledata
       - moodlehtml:/var/www/html
