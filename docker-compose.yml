@@ -1,11 +1,5 @@
 version: "3"
 
-networks:
-  proxy:
-    name: proxy
-  lms:
-    name: lms
-
 volumes:
   postgres:
     driver: local
@@ -19,7 +13,7 @@ volumes:
 services:
   traefik:
     restart: unless-stopped
-    image: traefik:2.4
+    image: traefik
     labels:
       - "traefik.enable=true"
 
@@ -37,8 +31,6 @@ services:
       - "traefik.http.routers.dashboard-http.middlewares=https_redirect"
 
       - "traefik.http.services.dashboard.loadbalancer.server.port=80"
-    networks:
-      - proxy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - ./traefik.yml:/traefik.yml
@@ -58,8 +50,6 @@ services:
       - POSTGRES_PASSWORD=moodle
       - POSTGRES_USER=moodle
       - POSTGRES_DB=moodle
-    networks:
-      - lms
     volumes:
       - postgres:/var/lib/postgresql/data
 
@@ -101,11 +91,9 @@ services:
       - "traefik.http.routers.moodle-https.tls.certresolver=defaultResolver"
       - "traefik.http.routers.moodle-https-service=moodle-http-service"
       - "traefik.http.services.moodle-http-service.loadbalancer.server.port=8080"
-    networks:
-      - lms
-      - proxy
     volumes:
       - moodledata:/var/www/moodledata
       - moodlehtml:/var/www/html
     depends_on:
       - postgres
+      - traefik
