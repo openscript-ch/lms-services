@@ -1,0 +1,106 @@
+version: "3"
+
+networks:
+  proxy:
+    name: proxy
+
+volumes:
+  postgres:
+    driver: local
+  moodledata:
+    driver: local
+  moodlehtml: 
+    driver: local
+  letsencrypt:
+    driver: local
+
+services:
+  traefik:
+    restart: unless-stopped
+    image: traefik
+    labels:
+      - "traefik.enable=true"
+
+      - "traefik.http.middlewares.auth.basicauth.users=harold.finch:$$2y$$05$$eSfwvKJnawY0Ac2Rdsm2A.iQwvEEL0VcOp.y0aOh0BqTmGacAgmm2"
+      - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.permanent=true"
+
+      - "traefik.http.routers.dashboard-https.rule=Host(`#{PROXY_URL}#`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.dashboard-https.entrypoints=https"
+      - "traefik.http.routers.dashboard-https.tls.certresolver=defaultResolver"
+      - "traefik.http.routers.dashboard-https.service=api@internal"
+      - "traefik.http.routers.dashboard-https.middlewares=auth"
+      - "traefik.http.routers.dashboard-http.rule=Host(`#{PROXY_URL}#`)"
+      - "traefik.http.routers.dashboard-http.entrypoints=http"
+      - "traefik.http.routers.dashboard-http.middlewares=https_redirect"
+
+      - "traefik.http.services.dashboard.loadbalancer.server.port=80"
+    networks:
+      - proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - ./traefik.yml:/traefik.yml
+      - letsencrypt:/letsencrypt
+    ports:
+      - target: 80
+        published: 80
+        mode: host
+      - target: 443
+        published: 443
+        mode: host
+
+  postgres:
+    restart: unless-stopped
+    image: postgres:alpine
+    environment:
+      - POSTGRES_PASSWORD=moodle
+      - POSTGRES_USER=moodle
+      - POSTGRES_DB=moodle
+    volumes:
+      - postgres:/var/lib/postgresql/data
+
+  moodle:
+    image: erseco/alpine-moodle
+    restart: unless-stopped
+    environment:
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US:en
+      - SITE_URL=https://#{SITE_URL}#
+      - DB_TYPE=pgsql
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=moodle
+      - DB_USER=moodle
+      - DB_PASS=moodle
+      - DB_PREFIX=mdl_
+      - SSLPROXY=false
+      - MOODLE_EMAIL=https://#{MOODLE_EMAIL}#
+      - MOODLE_LANGUAGE=en
+      - MOODLE_SITENAME=#{MOODLE_SITENAME}#
+      - MOODLE_USERNAME=#{MOODLE_USERNAME}#
+      - MOODLE_PASSWORD=#{MOODLE_PASSWORD}#
+      - SMTP_HOST=#{SMTP_HOST}#
+      - SMTP_PORT=#{SMTP_PORT}#
+      - SMTP_USER=#{SMTP_USER}#
+      - SMTP_PASSWORD=#{SMTP_PASSWORD}#
+      - SMTP_PROTOCOL=tls
+      - MOODLE_MAIL_NOREPLY_ADDRESS=#{MOODLE_MAIL_NOREPLY_ADDRESS}#
+      - MOODLE_MAIL_PREFIX=[moodle]
+    ports:
+      - 8080:8080
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.middlewares.moodle-redirect-https.redirectscheme.scheme=https"
+      - "traefik.http.routers.moodle-http.middlewares=moodle-redirect-https"
+      - "traefik.http.routers.moodle-http.rule=Host(`#{SITE_URL}#`)"
+      - "traefik.http.routers.moodle-http.entrypoints=http"
+      - "traefik.http.routers.moodle-https.rule=Host(`#{SITE_URL}#`)"
+      - "traefik.http.routers.moodle-https.entrypoints=https"
+      - "traefik.http.routers.moodle-https.tls.certresolver=defaultResolver"
+      - "traefik.http.routers.moodle-https-service=moodle-http-service"
+      - "traefik.http.services.moodle-http-service.loadbalancer.server.port=8080"
+    volumes:
+      - moodledata:/var/www/moodledata
+      - moodlehtml:/var/www/html
+    depends_on:
+      - postgres
