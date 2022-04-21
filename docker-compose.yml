@@ -86,8 +86,6 @@ services:
       - SMTP_PROTOCOL=tls
       - MOODLE_MAIL_NOREPLY_ADDRESS=#{MOODLE_MAIL_NOREPLY_ADDRESS}#
       - MOODLE_MAIL_PREFIX=[moodle]
-    ports:
-      - 8080:8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.moodle-redirect-https.redirectscheme.scheme=https"
