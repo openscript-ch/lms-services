@@ -34,4 +34,5 @@ jobs:
              chmod 700 ~/.ssh
              ssh-keyscan ${{ secrets.SITE_URL }} >> ~/.ssh/known_hosts
              chmod 644 ~/.ssh/known_hosts
+             scp -o StrictHostKeyChecking=no -r * deploy@${{ secrets.SITE_URL }}:/srv/${{ secrets.SITE_URL }}/
              ssh deploy@${{ secrets.SITE_URL }} "sudo scripts/update-docker.sh"
