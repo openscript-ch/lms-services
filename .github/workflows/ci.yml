@@ -34,5 +34,5 @@ jobs:
              chmod 700 ~/.ssh
              ssh-keyscan ${{ secrets.SITE_URL }} >> ~/.ssh/known_hosts
              chmod 644 ~/.ssh/known_hosts
-             scp -v -r * deploy@${{ secrets.SITE_URL }}:/srv/${{ secrets.SITE_URL }}/
+             scp -v -o HostKeyAlgorithms=+ssh-rsa -o PubkeyAcceptedKeyTypes=+ssh-rsa  -r * deploy@${{ secrets.SITE_URL }}:/srv/${{ secrets.SITE_URL }}/
              ssh deploy@${{ secrets.SITE_URL }} "sudo scripts/update-docker.sh"
