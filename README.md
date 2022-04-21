@@ -91,6 +91,29 @@ The following sources were used:
 
 ### Application system
 
+1. Clone this repository into `/srv/lms-services`
+
+   ```bash
+   git clone https://github.com/openscript-ch/lms-services /srv/lms-services
+   ```
+
+1. Make sure that the DNS is routing all subdomains to the host where the individual services run on.
+
+   ```txt
+   *.lms 10800 IN CNAME lms.example.com.`
+   `lms 10800 IN A 999.999.999.999`
+   `lms 10800 IN AAAA xxxx:xxxx:xxxx:xxxx::1`
+   ```
+
+1. Replace all `example.com` with the domain where the application runs on.
+
+   ```bash
+   sed -i "s/example.com/example.ch/g" docker-compose.yml`
+   ```
+
+1. Change contact email for SSL certificates in `traefik.yml`
+1. Configure the environment variables
+
 ### Deployment user
 
 1. Create `deploy` user with restricted shell (rbash)
@@ -142,7 +165,8 @@ The following sources were used:
       ```bash
       #/bin/bash
 
-      cd /srv/lms.openscript.cloud
+      cd /srv/lms-services
+      git pull
       docker-compose -f docker-compose.yml pull
       docker-compose -f docker-compose.yml up -d --remove-orphans
       docker image prune -a -f
