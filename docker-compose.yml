@@ -22,7 +22,7 @@ services:
     image: traefik
     labels:
       - "traefik.enable=true"
-      - "traefik.http.middlewares.auth.basicauth.users=harold.finch:$$2y$$05$$eSfwvKJnawY0Ac2Rdsm2A.iQwvEEL0VcOp.y0aOh0BqTmGacAgmm2"
+      - "traefik.http.middlewares.auth.basicauth.users=harold.finch:${HTTP_AUTH_PASSWORD}"
       - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.scheme=https"
       - "traefik.http.middlewares.dashboard-https-redirect.redirectscheme.permanent=true"
       - "traefik.http.routers.dashboard-https.rule=Host(`${PROXY_URL}`) && (PathPrefix(`/api`) || PathPrefix(`/dashboard`))"

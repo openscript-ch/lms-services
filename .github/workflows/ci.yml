@@ -15,6 +15,7 @@ jobs:
 
       - name: Replace variables
         env:
+          HTTP_AUTH_PASSWORD: ${{ secrets.HTTP_AUTH_PASSWORD }}
           PROXY_URL: ${{ secrets.PROXY_URL }}
           SITE_URL: ${{ secrets.SITE_URL }}
           MOODLE_EMAIL: ${{ secrets.MOODLE_EMAIL }}
