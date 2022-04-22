@@ -64,29 +64,29 @@ services:
     image: erseco/alpine-moodle
     restart: unless-stopped
     environment:
-      - LANG=en_US.UTF-8
-      - LANGUAGE=en_US:en
-      - SITE_URL=https://${SITE_URL}
-      - DB_TYPE=pgsql
-      - DB_HOST=postgres
-      - DB_PORT=5432
-      - DB_NAME=moodle
-      - DB_USER=moodle
-      - DB_PASS=moodle
-      - DB_PREFIX=mdl_
-      - SSLPROXY=false
-      - MOODLE_EMAIL=${MOODLE_EMAIL}
-      - MOODLE_LANGUAGE=en
-      - MOODLE_SITENAME=${MOODLE_SITENAME}
-      - MOODLE_USERNAME=${MOODLE_USERNAME}
-      - MOODLE_PASSWORD=${MOODLE_PASSWORD}
-      - SMTP_HOST=${SMTP_HOST}
-      - SMTP_PORT=${SMTP_PORT}
-      - SMTP_USER=${SMTP_USER}
-      - SMTP_PASSWORD=${SMTP_PASSWORD}
-      - SMTP_PROTOCOL=tls
-      - MOODLE_MAIL_NOREPLY_ADDRESS=${MOODLE_MAIL_NOREPLY_ADDRESS}
-      - MOODLE_MAIL_PREFIX=[moodle]
+      - "LANG=en_US.UTF-8"
+      - "LANGUAGE=en_US:en"
+      - "SITE_URL=https://${SITE_URL}"
+      - "DB_TYPE=pgsql"
+      - "DB_HOST=postgres"
+      - "DB_PORT=5432"
+      - "DB_NAME=moodle"
+      - "DB_USER=moodle"
+      - "DB_PASS=moodle"
+      - "DB_PREFIX=mdl_"
+      - "SSLPROXY=true"
+      - "MOODLE_EMAIL=${MOODLE_EMAIL}"
+      - "MOODLE_LANGUAGE=en"
+      - "MOODLE_SITENAME=${MOODLE_SITENAME}"
+      - "MOODLE_USERNAME=${MOODLE_USERNAME}"
+      - "MOODLE_PASSWORD=${MOODLE_PASSWORD}"
+      - "SMTP_HOST=${SMTP_HOST}"
+      - "SMTP_PORT=${SMTP_PORT}"
+      - "SMTP_USER=${SMTP_USER}"
+      - "SMTP_PASSWORD=${SMTP_PASSWORD}"
+      - "SMTP_PROTOCOL=tls"
+      - "MOODLE_MAIL_NOREPLY_ADDRESS=${MOODLE_MAIL_NOREPLY_ADDRESS}"
+      - "MOODLE_MAIL_PREFIX=[moodle]"
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.moodle-redirect-https.redirectscheme.scheme=https"
