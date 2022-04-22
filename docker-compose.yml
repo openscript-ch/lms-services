@@ -66,7 +66,7 @@ services:
     environment:
       - LANG=en_US.UTF-8
       - LANGUAGE=en_US:en
-      - SITE_URL=http://${SITE_URL}
+      - SITE_URL=https://${SITE_URL}
       - DB_TYPE=pgsql
       - DB_HOST=postgres
       - DB_PORT=5432
@@ -87,6 +87,8 @@ services:
       - SMTP_PROTOCOL=tls
       - MOODLE_MAIL_NOREPLY_ADDRESS=${MOODLE_MAIL_NOREPLY_ADDRESS}
       - MOODLE_MAIL_PREFIX=[moodle]
+    ports:
+      - 80:8080
     labels:
       - "traefik.enable=true"
       - "traefik.http.middlewares.moodle-redirect-https.redirectscheme.scheme=https"
@@ -97,7 +99,7 @@ services:
       - "traefik.http.routers.moodle-https.entrypoints=https"
       - "traefik.http.routers.moodle-https.tls.certresolver=defaultResolver"
       - "traefik.http.routers.moodle-https-service=moodle-http-service"
-      - "traefik.http.services.moodle-http-service.loadbalancer.server.port=8080"
+      - "traefik.http.services.moodle-http-service.loadbalancer.server.port=80"
     networks:
       - lms
       - proxy
