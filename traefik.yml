@@ -19,7 +19,7 @@ providers:
 certificatesResolvers:
   defaultResolver:
     acme:
-      email: "#{ACME_EMAIL}#"
+      email: "${ACME_EMAIL}"
       storage: "/letsencrypt/acme.json"
       httpChallenge:
         entryPoint: "http"

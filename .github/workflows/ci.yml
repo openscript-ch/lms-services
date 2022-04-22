@@ -10,6 +10,9 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3
 
+      - name: Install envsubst
+        run: which envsubst || ( apt-get update -y && apt-get install gettext-base -y )
+
       - name: Replace variables
         env:
           PROXY_URL: ${{ secrets.PROXY_URL }}
@@ -25,18 +28,8 @@ jobs:
           MOODLE_MAIL_NOREPLY_ADDRESS: ${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
         run: |
-             find *.yml -type f -exec sed -i ''s/#{PROXY_URL}#/$PROXY_URL/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SITE_URL}#/$SITE_URL/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_EMAIL}#/$MOODLE_EMAIL/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_SITENAME}#/$MOODLE_SITENAME/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_USERNAME}#/$MOODLE_USERNAME/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_PASSWORD}#/$MOODLE_PASSWORD/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_HOST}#/$SMTP_HOST/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_PORT}#/$SMTP_PORT/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_USER}#/$SMTP_USER/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{SMTP_PASSWORD}#/$SMTP_PASSWORD/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{MOODLE_MAIL_NOREPLY_ADDRESS}#/$MOODLE_MAIL_NOREPLY_ADDRESS/g'' {} \;
-             find *.yml -type f -exec sed -i ''s/#{ACME_EMAIL}#/$ACME_EMAIL/g'' {} \;
+             envsubst < docker-compose.yml > docker-compose.yml
+             envsubst < traefik.yml > traefik.yml
 
       - name: Trigger deployment
         env:
