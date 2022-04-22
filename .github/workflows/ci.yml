@@ -28,8 +28,8 @@ jobs:
           MOODLE_MAIL_NOREPLY_ADDRESS: ${{ secrets.MOODLE_MAIL_NOREPLY_ADDRESS }}
           ACME_EMAIL: ${{ secrets.ACME_EMAIL }}
         run: |
-             envsubst < docker-compose.yml > docker-compose.yml
-             envsubst < traefik.yml > traefik.yml
+             echo "$(envsubst < docker-compose.yml)" > docker-compose.yml
+             echo "$(envsubst < traefik.yml)" > traefik.yml
 
       - name: Trigger deployment
         env:
