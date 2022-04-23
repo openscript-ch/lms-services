@@ -204,6 +204,7 @@ Set the following secrets:
 
 | Value | Description | Example |
 |---|---|---|
+| `HTTP_AUTH_PASSWORD` | Password for http auth protected pages | |
 | `PROXY_URL` | URL where the proxies (traefik) dashboard becomes available. | proxy.lms.example.com |
 | `SITE_URL` | URL where the LMS becomes available. | lms.example.com |
 | `MOODLE_EMAIL` | Contact email address displayed inside LMS. | admin@example.com |
